@@ -38,7 +38,7 @@ const Button: React.SFC<ButtonProps> = ({
     onClick={onClick}
     onTouchStart={onClick}
   >
-    {image && <img src={image} />}
+    {image && <img src={image} draggable={false} />}
     {text}
   </div>
 );

@@ -17,7 +17,8 @@ const Message: React.SFC<MessageProps> = ({ text: message }) => (
       padding: 12,
       color: "#ffffff",
       fontWeight: 900,
-      fontSize: 24
+      fontSize: 24,
+      textAlign: "center"
     }}
   >
     {message}

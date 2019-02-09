@@ -26,7 +26,7 @@ const treeRightMoveTimeInterval = 125;
 const treeRightMoveDelta = 25;
 const treeRightInterval = 160;
 const treeBottom = 240;
-const backgroundTreeCount = 8;
+const backgroundTreeCount = 20;
 
 export default class BackgroundTree extends React.Component<
   BackgroundTreeProps,

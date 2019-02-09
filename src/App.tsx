@@ -10,6 +10,7 @@ import BackgroundTree from "./BackgroundTree";
 import Message from "./components/Message";
 import Button from "./components/Button";
 import Bar from "./components/Bar";
+import { shortNumber } from "./utils/numbers";
 
 const House = defineAssetNx(2.5)(assets.houses);
 const Player = defineCharacterNx(2.5)(assets.players);
@@ -46,6 +47,7 @@ const sleep = (millis: number) =>
   new Promise<void>(resolve => window.setTimeout(resolve, millis));
 
 class App extends React.Component<{}, AppState> {
+  private count: number = 0;
   constructor(props: {}) {
     super(props);
     this.state = {
@@ -59,6 +61,7 @@ class App extends React.Component<{}, AppState> {
 
   public componentDidMount() {
     this.gameLoop();
+    window.addEventListener("keydown", this.onKeyDown);
   }
 
   public render() {
@@ -95,15 +98,6 @@ class App extends React.Component<{}, AppState> {
           backgroundColor="#333333"
           border="2px solid #111111"
         />
-        <Bar
-          currentValue={80}
-          position={{ right: 24, top: 54 }}
-          size={{ width: 180, height: 24 }}
-          fillColor="#006400"
-          fontColor="#ffffff"
-          backgroundColor="#333333"
-          border="2px solid #111111"
-        />
         <Player
           index={0}
           animationDelay={state === GameState.GameWalking ? 150 : 0}
@@ -111,7 +105,7 @@ class App extends React.Component<{}, AppState> {
         />
         <React.Fragment>
           <Button
-            position={{ right: 116, bottom: 32 }}
+            position={{ left: 32, bottom: 32 }}
             padding={0}
             image={assets.icons.sword}
             opacity={1}
@@ -131,15 +125,15 @@ class App extends React.Component<{}, AppState> {
   }
 
   private gameLoop = async () => {
+    this.setMessageText(`부동산 파괘자`, 1000);
+    await sleep(1000);
     while (true) {
       this.setState({
         state: GameState.GameWalking,
         house: undefined
       });
-      await sleep(2000);
-      const houseHp = Math.abs(
-        Math.floor(Math.random() * this.state.player.maxHp)
-      );
+      await sleep(1000 + Math.random() * 3000);
+      const houseHp = Math.floor(Math.random() * 10 * this.state.player.maxHp);
       this.setState({
         state: GameState.GameBattle,
         house: {
@@ -149,7 +143,7 @@ class App extends React.Component<{}, AppState> {
         }
       });
       while (this.state.house!.hp > 0 && this.state.player.hp > 0) {
-        await sleep(100);
+        await sleep(100 + Math.random() * 100);
         this.setState({
           player: {
             ...this.state.player,
@@ -157,12 +151,27 @@ class App extends React.Component<{}, AppState> {
           }
         });
       }
+      if (this.state.house!.hp <= 0) {
+        this.count++;
+      }
       if (this.state.player.hp <= 0) {
         this.setState({
           state: GameState.End
         });
         break;
       }
+    }
+    this.setMessageText(`제거한 부동산의 수 ${this.count}`, 60 * 60 * 1000);
+  };
+
+  private onKeyDown = (event: KeyboardEvent) => {
+    switch (event.key) {
+      case "ArrowLeft":
+        this.onButtonA();
+        break;
+      case "ArrowRight":
+        this.onButtonB();
+        break;
     }
   };
 
@@ -207,7 +216,7 @@ class App extends React.Component<{}, AppState> {
         this.setState({
           player: {
             ...player,
-            hp: Math.min(player.maxHp, player.hp * 1.01)
+            hp: Math.min(player.maxHp, player.hp * 1.5)
           }
         });
       default:
