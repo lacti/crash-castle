@@ -74,8 +74,8 @@ class App extends React.Component<{}, AppState> {
             <Bar
               maxValue={house.maxHp}
               currentValue={house.hp}
-              position={{ left: 24, bottom: 326 }}
-              size={{ width: 256, height: 24 }}
+              position={{ left: 32, bottom: 294 }}
+              size={{ width: 200, height: 24 }}
               fillColor="#ff0000"
               fontColor="#ffffff"
               backgroundColor="#333333"
@@ -83,7 +83,7 @@ class App extends React.Component<{}, AppState> {
             />
             <House
               index={house.index}
-              position={{ left: 48, bottom: 64 }}
+              position={{ left: 32, bottom: 64 }}
               opacity={1}
             />
           </React.Fragment>
@@ -101,7 +101,7 @@ class App extends React.Component<{}, AppState> {
         <Player
           index={0}
           animationDelay={state === GameState.GameWalking ? 150 : 0}
-          position={{ right: 80, bottom: 112 }}
+          position={{ right: 40, bottom: 112 }}
         />
         <React.Fragment>
           <Button

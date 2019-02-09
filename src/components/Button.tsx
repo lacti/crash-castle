@@ -35,8 +35,8 @@ const Button: React.SFC<ButtonProps> = ({
       borderWidth: border ? "2px" : "0px",
       borderRadius: "50%"
     }}
-    onClick={onClick}
-    onTouchStart={onClick}
+    onMouseUp={onClick}
+    onTouchEnd={onClick}
   >
     {image && <img src={image} draggable={false} />}
     {text}

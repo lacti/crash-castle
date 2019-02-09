@@ -10,7 +10,7 @@ const Message: React.SFC<MessageProps> = ({ text: message }) => (
       position: "absolute",
       right: 48,
       left: 48,
-      top: 48,
+      top: 80,
       backgroundColor: "#222222",
       border: "2px solid #000000",
       opacity: 1,
