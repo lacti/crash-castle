@@ -46,17 +46,24 @@ interface AppState {
 const sleep = (millis: number) =>
   new Promise<void>(resolve => window.setTimeout(resolve, millis));
 
+const initialState: AppState = {
+  state: GameState.Intro,
+  player: {
+    maxHp: 100,
+    hp: 100
+  }
+};
+
 class App extends React.Component<{}, AppState> {
   private count: number = 0;
+  private pressed = {
+    a: 0,
+    b: 0
+  };
+
   constructor(props: {}) {
     super(props);
-    this.state = {
-      state: GameState.Intro,
-      player: {
-        maxHp: 100,
-        hp: 100
-      }
-    };
+    this.state = initialState;
   }
 
   public componentDidMount() {
@@ -104,13 +111,15 @@ class App extends React.Component<{}, AppState> {
           position={{ right: 40, bottom: 112 }}
         />
         <React.Fragment>
-          <Button
-            position={{ left: 32, bottom: 32 }}
-            padding={0}
-            image={assets.icons.sword}
-            opacity={1}
-            onClick={this.onButtonA}
-          />
+          {state === GameState.GameBattle && (
+            <Button
+              position={{ left: 32, bottom: 32 }}
+              padding={0}
+              image={assets.icons.sword}
+              opacity={1}
+              onClick={this.onButtonA}
+            />
+          )}
           <Button
             position={{ right: 32, bottom: 32 }}
             padding={0}
@@ -143,25 +152,36 @@ class App extends React.Component<{}, AppState> {
         }
       });
       while (this.state.house!.hp > 0 && this.state.player.hp > 0) {
-        await sleep(100 + Math.random() * 100);
+        await sleep(300 + Math.random() * 300);
         this.setState({
           player: {
             ...this.state.player,
-            hp: Math.max(0, this.state.player.hp - houseHp * 0.01)
+            hp: Math.max(
+              0,
+              this.state.player.hp - houseHp * 0.01 * (1 + Math.random())
+            )
           }
         });
       }
       if (this.state.house!.hp <= 0) {
         this.count++;
+        this.setState({
+          player: {
+            ...this.state.player,
+            maxHp: this.state.player.maxHp + houseHp,
+            hp: this.state.player.hp + houseHp
+          }
+        });
       }
       if (this.state.player.hp <= 0) {
         this.setState({
           state: GameState.End
         });
-        break;
+        this.setMessageText(`제거한 부동산의 수 ${this.count}`, 10 * 1000);
+        await sleep(11 * 1000);
+        this.setState(initialState);
       }
     }
-    this.setMessageText(`제거한 부동산의 수 ${this.count}`, 60 * 60 * 1000);
   };
 
   private onKeyDown = (event: KeyboardEvent) => {
@@ -177,23 +197,21 @@ class App extends React.Component<{}, AppState> {
 
   private onButtonA = () => {
     const { house, player } = this.state;
+    const now = Date.now();
     switch (this.state.state) {
-      case GameState.GameWalking:
-        const newMaxHp = player.maxHp * 1.05;
-        this.setState({
-          player: {
-            ...player,
-            maxHp: newMaxHp,
-            hp: Math.max(newMaxHp * 0.01, player.hp)
-          }
-        });
-        break;
       case GameState.GameBattle:
+        if (now - this.pressed.a < 100) {
+          break;
+        }
+        this.pressed.a = now;
         if (house && house.hp > 0) {
           this.setState({
             house: {
               ...house,
-              hp: Math.max(0, house.hp - player.maxHp * 0.1)
+              hp: Math.max(
+                0,
+                house.hp - player.maxHp * (0.05 + Math.random() / 20)
+              )
             }
           });
         }
@@ -203,8 +221,13 @@ class App extends React.Component<{}, AppState> {
   };
   private onButtonB = () => {
     const { player } = this.state;
+    const now = Date.now();
     switch (this.state.state) {
       case GameState.GameWalking:
+        if (now - this.pressed.b < 100) {
+          break;
+        }
+        this.pressed.b = now;
         this.setState({
           player: {
             ...player,
@@ -213,10 +236,17 @@ class App extends React.Component<{}, AppState> {
         });
         break;
       case GameState.GameBattle:
+        if (now - this.pressed.b < 100) {
+          break;
+        }
+        this.pressed.b = now;
         this.setState({
           player: {
             ...player,
-            hp: Math.min(player.maxHp, player.hp * 1.5)
+            hp: Math.min(
+              player.maxHp,
+              player.hp + player.maxHp * (0.05 + Math.random() / 20)
+            )
           }
         });
       default:

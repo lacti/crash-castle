@@ -2,10 +2,11 @@ body,
 .App {
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
 }
 
 .App {
-  background: linear-gradient(0deg, #aad091 320px, #34abff 0);
+  background: linear-gradient(0deg, #aad091 340px, #34abff 0);
 }
 
 * {

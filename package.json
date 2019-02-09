@@ -20,7 +20,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "yarn build",
-    "deploy": "sls client deploy --no-confirm"
+    "deploy": "sls client deploy --no-confirm",
+    "postdeploy": "aws cloudfront create-invalidation --distribution-id EJHB1YQS171VB --paths / /index.html"
   },
   "eslintConfig": {
     "extends": "react-app"
