@@ -1,0 +1,14 @@
+body,
+.App {
+  width: 100vw;
+  height: 100vh;
+}
+
+.App {
+  background: linear-gradient(0deg, #aad091 290px, #34abff 0);
+}
+
+* {
+  user-select: none;
+  overflow: hidden;
+}
